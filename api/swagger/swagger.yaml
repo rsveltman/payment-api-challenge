@@ -1,0 +1,209 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Moip API Challenge
+  description: A sample API to process online payments
+  contact:
+    name: Rachel Sarubi
+    email: rsoveltman@gmail.com
+# during dev, should point to your local machine
+host: localhost:8080
+# basePath prefixes all resource paths 
+basePath: /
+# 
+tags:
+- name: "payments"
+  description: "Online Payments"
+  externalDocs:
+    description: "More info"
+    url: "http://#"
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /payments:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: payments
+    post:
+      tags:
+      - "payments"
+      summary: "Send payment"
+      description: Processes payment
+      operationId: "postPayment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "paymentParameters"
+        description: "Payment information"
+        required: true
+        schema:
+          $ref: "#/definitions/PaymentRequest"
+      responses:
+        400:
+          description: Bad Request
+        403:
+          description: API key is missing or invalid
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/PaymentResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      security:
+      - apiKeyAuth: []
+  /payments/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: payments
+    get:
+      tags:
+      - "payments"
+      summary: "Get payment info and status"
+      description: Returns payment info
+      operationId: "getPayment"
+      produces:
+      - "application/json"
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the payment to get its info
+        required: true
+        type: integer
+      responses:
+        400:
+          description: Bad Request
+        403:
+          description: API key is missing or invalid
+          schema:
+            $ref: "#/definitions/UnauthorizedErrorResponse"
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/PaymentResponse"
+      security:
+      - apiKeyAuth: []
+    
+  /swagger:
+    x-swagger-pipe: swagger_raw
+#complex objects have schema definitions
+securityDefinitions:
+  apiKeyAuth:
+        type: apiKey
+        in: header
+        name: x-api-key
+  paymentAuth:
+    type: oauth2
+    authorizationUrl: "http://#"
+    flow: implicit
+    scopes:
+      write:payments: "add a new payment"
+      read:payments: "read payment info"
+definitions:
+  Buyer:
+    type: object
+    required:
+      - name
+      - email
+      - cpf
+    properties:
+      name:
+        type: string
+        minLength: 5
+      email:
+        type: string
+        format: email
+      cpf:
+        type: string
+        minLength: 11
+        
+  Card:
+    type: object
+    required:
+      - holderName
+      - number
+      - expirationDate
+      - cvv
+    properties:
+      holderName:
+        type: string
+        minLength: 5
+      number:
+        type: string
+        minLength: 16
+      expirationDate:
+        type: string
+        format: date
+      cvv:
+        type: string
+        minLength: 3
+        
+  Payment:
+    type: object
+    required:
+      - amount
+      - type
+    properties:
+      amount:
+        type: integer
+      type:
+        type: string
+      card:
+        $ref: "#/definitions/Card"
+        
+  PaymentRequest:
+    type: object
+    required:
+      - payment
+      - buyer
+      - clientId
+    properties:
+      payment:
+        $ref: "#/definitions/Payment"
+      buyer:
+        $ref: "#/definitions/Buyer"
+      clientId:
+        type: integer
+
+  PaymentResponse:
+    type: object
+    required:
+      - status
+    properties:
+      id:
+        type: integer
+        description: Payment ID.
+      buyerInfo:
+        type: object
+        description: Buyer information.
+      paymentInfo:
+        type: object
+        description: Payment information.
+      status:
+        type: string
+        description: Status of payment process.
+        
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  
+  UnauthorizedErrorResponse:
+    properties:
+      WWW_Authenticate:
+        type: string
