@@ -28,14 +28,7 @@ const initOptions = {
 const pgp = require('pg-promise')(initOptions);
 
 
-
-const cn = {
-    host: 'localhost',
-    port: 5432,
-    database: 'apidb',
-    user: 'postgres', //ubuntu?
-    password: 'apitestesenha'
-};
+const cn = process.env.DATABASE_URL;
 
 const db = pgp(cn);
 
