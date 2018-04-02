@@ -4,7 +4,7 @@
   "private": true,
   "description": "Moip Payment API Challenge with Swagger",
   "keywords": [],
-  "author": "",
+  "author": "Rachel Sarubi",
   "license": "",
   "main": "app.js",
   "dependencies": {
