@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs');
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();

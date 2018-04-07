@@ -109,8 +109,9 @@ function processPayment(paramsPayment, res, response, client){
   
  switch(type) {
   case "boleto":
-   if (generateBoleto(paramsPayment, client)){
-    response.paymentInfo.boletoNumber = '(numerodoboleto)';
+   var bnumber = generateBoleto(paramsPayment, client);
+   if (bnumber){
+    response.paymentInfo.boletoNumber = bnumber;
     response.status = 'pending boleto payment';
     return response;
     

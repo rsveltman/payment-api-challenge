@@ -10,7 +10,7 @@ describe('security', function(){
   
       request(server)
         .post('/payments')
-        .send({payment:{amount:300,type:"boleto"},buyer:{email:"ciclano@a.com",cpf:"44455566677"},clientId:3})
+        .send({payment:{amount:300,type:"boleto"},buyer:{name:"fulano",email:"ciclano@a.com",cpf:"44455566677"},clientId:3})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -31,7 +31,7 @@ describe('security', function(){
   
       request(server)
         .post('/payments')
-        .send({payment:{amount:300,type:"boleto"},buyer:{email:"ciclano@a.com",cpf:"44455566677"},clientId:3})
+        .send({payment:{amount:300,type:"boleto"},buyer:{name:"fulano",email:"ciclano@a.com",cpf:"44455566677"},clientId:3})
         .set('Accept', 'application/json')
         .set('x-api-key', '134')
         .expect('Content-Type', /json/)

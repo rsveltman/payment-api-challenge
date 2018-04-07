@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "swagger project test"
+    "test": "DATABASE_URL=postgres://postgres:apitestesenha@localhost:5432/apidb API_KEY=1234 swagger project test",
+    "localstart": "DATABASE_URL=postgres://postgres:apitestesenha@localhost:5432/apidb API_KEY=1234 swagger project start"
   }
 }
