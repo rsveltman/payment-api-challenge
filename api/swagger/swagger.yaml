@@ -1,13 +1,13 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Moip API Challenge
-  description: A sample API to process online payments
+  title: Payment API Challenge
+  description: Payment API Simulation
   contact:
     name: Rachel Sarubi
     email: rsoveltman@gmail.com
 # during dev, should point to your local machine
-host: localhost:8080
+host: api-test-node-rsov.c9users.io
 # basePath prefixes all resource paths 
 basePath: /
 # 
@@ -27,7 +27,16 @@ consumes:
 # format of the responses to the client (Accepts)
 produces:
   - application/json
+  - text/html
 paths:
+  /documentation:
+    x-swagger-router-controller: docs
+    get:
+      summary: "API Docs"
+      operationId: "getDocs"
+      responses:
+        200:
+          description: "Success"
   /payments:
     # binds a127 app logic to a route
     x-swagger-router-controller: payments

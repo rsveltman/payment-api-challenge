@@ -10,8 +10,10 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "express": "^4.12.3",
+    "js-yaml": "^3.11.0",
     "pg-promise": "^8.2.2",
-    "swagger-express-mw": "^0.1.0"
+    "swagger-express-mw": "^0.1.0",
+    "swagger-ui-alone": "^1.0.0"
   },
   "devDependencies": {
     "should": "^7.1.0",
