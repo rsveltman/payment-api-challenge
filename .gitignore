@@ -35,4 +35,4 @@ config/runtime.yaml
 
 populateDB
 tests
-checkout.js
+checkoutJS.js
