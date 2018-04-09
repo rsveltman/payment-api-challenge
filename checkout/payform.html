@@ -138,7 +138,12 @@
     
                     // log data to the console so we can see
                     console.log(data); 
-                    $('#resultSpan').html(data.status + "  -  " + data.errorMessage);
+                    if (data.status === "error"){
+                        $('#resultSpan').html("ERROR: " + data.errorMessage);
+                    } else {
+                        $('#resultSpan').html(data.status);
+                    }
+                    
     
                     // here we will handle errors and validation messages
                 })
