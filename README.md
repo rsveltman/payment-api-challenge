@@ -30,7 +30,7 @@ You can simulate an online payment without directly interacting with the API by 
 
 ## The Code
 
-In package.json there are 3 scripts: 
+In `package.json` there are 3 scripts: 
 * start - this is the script that is run by heroku. Don't run this locally.
 * test - runs the tests using 2 environment variables: DATABASE_URL and API_KEY. These may be changed to reflect your local configuration.
 * localstart - starts in localhost with environment variables as above. Call this with `npm run-script localstart`.
@@ -52,8 +52,9 @@ The use of an API Key is only because this is a simulation. The next step would 
 * [node.js](https://nodejs.org/en/)
 * [Swagger](https://swagger.io) - API Development Framework
 * [pg-promise](https://www.npmjs.com/package/pg-promise) - [Promises/A+](https://promisesaplus.com/) interface for PostgreSQL.
+* [Javascript credit card validation](https://www.braemoor.co.uk/software/creditcard.shtml) - [author](software@braemoor.co.uk)
 
 
 ## Author
 
-* [*Rachel Sarubi de Oliveira Veltman*](https://github.com/rsveltman)
+* [*It's me*](https://github.com/rsveltman)
