@@ -12,7 +12,7 @@ Use the API key `1234` in the header as shown in the examples.
 - Create a new payment with POST:
 
 ```
-curl -i -X POST -H  'x-api-key: 1234' -H 'Content-Type: application/json' -d '{"payment":{"amount":"560","type":"card","card":{"holderName":"Beltrano","number":"1234-3214-1214-6789","expirationDate":"2019-09-12","cvv":"123"}},"buyer":{"name":"Fulano","email":"a@a.com","cpf":"11122233345"},"clientId":"17"}'  https://banana-crisp-85488.herokuapp.com/payments
+curl -i -X POST -H  'x-api-key: 1234' -H 'Content-Type: application/json' -d '{"payment":{"amount":"560","type":"card","card":{"holderName":"Beltrano","number":"1234321412146789","expirationDate":"2019-09-12","cvv":"123"}},"buyer":{"name":"Fulano","email":"a@a.com","cpf":"11122233345"},"clientId":"17"}'  https://banana-crisp-85488.herokuapp.com/payments
 ```
 - Check an existing payment with GET:
 
