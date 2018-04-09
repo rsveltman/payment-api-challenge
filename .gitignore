@@ -36,3 +36,4 @@ config/runtime.yaml
 populateDB
 tests
 checkoutJS.js
+creditcard.js

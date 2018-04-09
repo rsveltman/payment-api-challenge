@@ -32,18 +32,17 @@ You can simulate an online payment without directly interacting with the API by 
 
 In `package.json` there are 3 scripts: 
 * start - this is the script that is run by heroku. Don't run this locally.
-* test - runs the tests using 2 environment variables: DATABASE_URL and API_KEY. These may be changed to reflect your local configuration.
+* test - runs the tests using 2 environment variables: `DATABASE_URL` and `API_KEY`. These may be changed to reflect your local configuration.
 * localstart - starts in localhost with environment variables as above. Call this with `npm run-script localstart`.
 
 ### swagger.yaml
 
-All changes must be described in the swagger document first. [See this guide.](https://swagger.io/docs/specification/basic-structure/)
+All changes must be described in the swagger document first. Add a path, then add the REST methods and create a corresponding controller file. [See this guide for the details.](https://swagger.io/docs/specification/basic-structure/)
 
 
 ### Security
 
 The use of an API Key is only because this is a simulation. The next step would be to add [OAuth 2](https://swagger.io/docs/specification/authentication/oauth2/). 
-
 
 
 
