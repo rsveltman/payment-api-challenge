@@ -172,6 +172,7 @@ function postPayment(req, res) {
  
  db.one('INSERT INTO payments(clientid, paymentinfo, buyerinfo, status) VALUES($1, $2, $3, $4) RETURNING id', [client, pay_info, buyer_info, response.status])
  .then(data => {
+  console.log(response);
   response['id'] = data.id;
   res.json( response );
  })

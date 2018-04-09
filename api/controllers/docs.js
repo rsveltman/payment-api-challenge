@@ -1,10 +1,8 @@
 var yaml = require("js-yaml");
 var fs = require('fs');
-var swaggerfile = yaml.load(fs.readFileSync("api/swagger/swagger.yaml"));
+var spec = yaml.load(fs.readFileSync("api/swagger/swagger.yaml"));
 
 const alone = require('swagger-ui-alone');
-
-const spec = swaggerfile;
 
 // turn your spec into a swagger-ui page
 const docs = alone(spec);

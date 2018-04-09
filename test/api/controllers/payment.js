@@ -78,7 +78,7 @@ describe('controllers', function() {
 
         request(server)
           .post('/payments')
-          .send({payment:{amount:200,type:"boleto"},buyer:{name:"fulano",email:"a@a.com",cpf:"46556745633"},clientId:1})
+          .send({payment:{amount:"200",type:"boleto"},buyer:{name:"fulano",email:"a@a.com",cpf:"46556745633"},clientId:"1"})
           .set('Accept', 'application/json')
           .set('x-api-key', '1234')
           .expect('Content-Type', /json/)
@@ -98,7 +98,7 @@ describe('controllers', function() {
 
         request(server)
           .post('/payments')
-          .send({payment:{amount:200,type:"card", card:{holderName:"Fulano de tal",number:"1234-3214-1214-6789",expirationDate:"2019-09-09",cvv:"123"}},buyer:{name:"fulano",email:"a@a.com",cpf:"12345678900"},clientId:1})
+          .send({payment:{amount:"200",type:"card", card:{holderName:"Fulano de tal",number:"1234-3214-1214-6789",expirationDate:"2019-09-09",cvv:"123"}},buyer:{name:"fulano",email:"a@a.com",cpf:"12345678900"},clientId:"1"})
           .set('Accept', 'application/json')
           .set('x-api-key', '1234')
           .expect('Content-Type', /json/)

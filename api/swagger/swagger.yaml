@@ -7,7 +7,7 @@ info:
     name: Rachel Sarubi
     email: rsoveltman@gmail.com
 # during dev, should point to your local machine
-host: banana-crisp-85488.herokuapp.com
+host: api-test-node-rsov.c9users.io
 # basePath prefixes all resource paths 
 basePath: /
 # 
@@ -19,7 +19,6 @@ tags:
     url: "http://#"
 schemes:
   # tip: remove http to make production-grade
-  - http
   - https
 # format of bodies a client can send (Content-Type)
 consumes:
@@ -29,14 +28,40 @@ produces:
   - application/json
   - text/html
 paths:
+  /checkout:
+    x-swagger-router-controller: checkout
+    get:
+      tags:
+      - "checkout"
+      summary: "Get payment form"
+      description: Returns page with payment form
+      operationId: "getCheckout"
+      produces:
+      - "text/html"
+      responses:
+        400:
+          description: Bad Request
+        200:
+          description: Success
+        default:
+          description: Unexpected Error
   /documentation:
     x-swagger-router-controller: docs
     get:
       summary: "API Docs"
       operationId: "getDocs"
+      produces:
+        - "text/html"
       responses:
         200:
           description: "Success"
+          headers:
+            Access-Control-Allow-Headers:
+              type: string
+              collectionFormat: csv
+              default: Origin, X-Requested-With, Content-Type, Accept
+              description: Allow headers
+
   /payments:
     # binds a127 app logic to a route
     x-swagger-router-controller: payments
@@ -103,6 +128,8 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/PaymentResponse"
+        default:
+          description: Unexpected Error
       security:
       - apiKeyAuth: []
     
@@ -114,13 +141,6 @@ securityDefinitions:
         type: apiKey
         in: header
         name: x-api-key
-  paymentAuth:
-    type: oauth2
-    authorizationUrl: "http://#"
-    flow: implicit
-    scopes:
-      write:payments: "add a new payment"
-      read:payments: "read payment info"
 definitions:
   Buyer:
     type: object
@@ -167,7 +187,7 @@ definitions:
       - type
     properties:
       amount:
-        type: integer
+        type: string
       type:
         type: string
       card:
@@ -185,7 +205,7 @@ definitions:
       buyer:
         $ref: "#/definitions/Buyer"
       clientId:
-        type: integer
+        type: string
 
   PaymentResponse:
     type: object

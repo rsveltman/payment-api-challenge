@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Form</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    #divCard {
+      display: none;
+    }
+    .container {
+        margin: auto;
+        margin-top: 3%;
+        width: 50%;
+    }
+
+  </style>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</head>
+<body class="bg-light">
+    <div class="container">
+        <h4 class="mb-3">Payment Information</h4>
+        <div class="row">
+            <div class="col-md-8 order-md-1">
+                <form class="needs-validation" novalidate="">
+                    <div class="sr-only" id="clientID">
+                      <input type="hidden" id="clientID" value=5>
+                    </div>
+                    <div class="mb-3">            
+                        <label for="fullName">Name:</label>
+                        <input id="fullName" class="form-control" placeholder="" type="text" required="" >
+                    </div>
+                    <div class="mb-3">            
+                        <label for="cpf">CPF:</label>
+                        <input id="cpf" class="form-control" type="text" required="" >
+                    </div>
+                    <div class="mb-3">   
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" required="" >
+                    </div>
+                    <div class="mb-3">        
+                        <label>Method of Payment:</label>
+                        <div class="custom-radio">
+                            <label for="card">Card</label>
+                            <input type="radio" name="type" id="card" required="" >
+                        </div>
+                        <div class="custom-radio">
+                            <label for="boleto">Boleto</label>
+                            <input type="radio" name="type" id="boleto" required=""  >
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount">Amount:</label>
+                        <input type="number" class="form-control" id="amount" min="0.00" step="0.01" required="" >
+                    </div>
+                    <div id="divCard">
+                      <div class="mb-3">            
+                          <label for="holderName">Card Holder:</label>
+                          <input id="holderName" class="form-control" placeholder="" type="text" >
+                      </div>
+                      <div class="mb-3">
+                          <label for="cardNumber">Card Number:</label>
+                          <input type="text" id="cardNumber" class="form-control" >
+                      </div>
+                      <div class="mb-3">
+                          <label for="expiration">Expiration Date:</label>
+                          <input type="date" id="expiration" title="Card Expiration Date." class="form-control" >
+                      </div>
+                      <div class="mb-3">
+                          <label for="cardCvv">CVV:</label>
+                          <input type="text" id="cardCvv" class="form-control" >
+                      </div>
+                    </div>
+                    
+            
+                    <div  class="mb-3" id ="resultDiv">        
+                        <h5 class="d-flex justify-content-between align-items-center">Result:</h5><small class="text-muted" id="resultSpan"></small>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" id="submitButton" type="submit">Pay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+        
+</body>
+<script>
+    $(document).ready(function() {
+        var payType = '';
+        $('#card').click(function() {
+            $('#divCard').css("display", "block");
+        });
+        $('#boleto').click(function() {
+            $('#divCard').css("display", "none");
+        });
+    
+        // process the form
+        $('form').submit(function(event) {
+            // stop the form from submitting the normal way and refreshing the page
+            event.preventDefault();
+            // get the form data
+            var formData = {
+                              "payment": {
+                                "amount": $('input[id=amount]').val(),
+                                "type": $('input[name=type]:checked', 'form').attr('id')
+                              },
+                              "buyer": {
+                                "name": $('input[id=fullName]').val(),
+                                "email": $('input[id=email]').val(),
+                                "cpf": $('input[id=cpf]').val()
+                              },
+                              "clientId": $('input[id=clientID]').val()
+                            };
+            if (formData.payment.type === "card"){
+                formData.payment["card"] = {
+                                  "holderName": $('input[id=holderName]').val(),
+                                  "number": $('input[id=cardNumber]').val(),
+                                  "expirationDate": $('input[id=expiration]').val(),
+                                  "cvv": $('input[id=cardCvv]').val()
+                                };
+            }
+            // process the form
+            $.ajax({
+                type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                url         : 'https://api-test-node-rsov.c9users.io/payments',
+                data        : JSON.stringify(formData), // our data object
+                dataType    : 'json', // what type of data do we expect back from the server
+                contentType : 'application/json; charset=UTF-8',
+                headers     : { "x-api-key": 1234 },
+                encode          : true
+            })
+                // using the done promise callback
+                .done(function(data) {
+    
+                    // log data to the console so we can see
+                    console.log(data); 
+                    $('#resultSpan').html(data.status + "  -  " + data.errorMessage);
+    
+                    // here we will handle errors and validation messages
+                })
+                .fail(function(error){
+                    console.log(error); 
+                    $('#resultSpan').html(error.status + "  -  " + error.statusText);
+                });
+    
+            
+        });
+    
+    });
+      
+</script>
+
+
+</html>
