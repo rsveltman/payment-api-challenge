@@ -27,41 +27,42 @@
         <h4 class="mb-3">Payment Information</h4>
         <div class="row">
             <div class="col-md-8 order-md-1">
-                <form class="needs-validation" novalidate="">
+                <form class="needs-validation" >
                     <div class="sr-only" id="clientID">
                       <input type="hidden" id="clientID" value=5>
                     </div>
                     <div class="mb-3">            
                         <label for="fullName">Name:</label>
-                        <input id="fullName" class="form-control" placeholder="" type="text" required="" >
+                        <input id="fullName" class="form-control" type="text" title="Please write your full name" required="required" pattern="[a-zA-Z]{5,}">
                     </div>
+
                     <div class="mb-3">            
                         <label for="cpf">CPF:</label>
-                        <input id="cpf" class="form-control" type="text" required="" >
+                        <input id="cpf" class="form-control" type="text" title="Your CPF must have 11 digits" required="required" pattern="[0-9]{11}" >
                     </div>
                     <div class="mb-3">   
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" required="" >
+                        <input type="email" class="form-control" id="email" required="required" >
                     </div>
                     <div class="mb-3">        
                         <label>Method of Payment:</label>
                         <div class="custom-radio">
                             <label for="card">Card</label>
-                            <input type="radio" name="type" id="card" required="" >
+                            <input type="radio" name="type" id="card" required="required" >
                         </div>
                         <div class="custom-radio">
                             <label for="boleto">Boleto</label>
-                            <input type="radio" name="type" id="boleto" required=""  >
+                            <input type="radio" name="type" id="boleto" required="required"  >
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="amount">Amount:</label>
-                        <input type="number" class="form-control" id="amount" min="0.00" step="0.01" required="" >
+                        <input type="number" class="form-control" id="amount" min="0.00" step="0.01" required="required" >
                     </div>
                     <div id="divCard">
                       <div class="mb-3">            
                           <label for="holderName">Card Holder:</label>
-                          <input id="holderName" class="form-control" placeholder="" type="text" >
+                          <input id="holderName" class="form-control" type="text" title="Please write your name as it is on the card" pattern="[a-zA-Z]{5,}">
                       </div>
                       <div class="mb-3">
                           <label for="cardNumber">Card Number:</label>
@@ -73,7 +74,7 @@
                       </div>
                       <div class="mb-3">
                           <label for="cardCvv">CVV:</label>
-                          <input type="text" id="cardCvv" class="form-control" >
+                          <input type="text" id="cardCvv" class="form-control" title="Please write the 3 numbers on the back of your card" pattern="[0-9]{3}" >
                       </div>
                     </div>
                     
@@ -90,8 +91,8 @@
         
 </body>
 <script>
+ 
     $(document).ready(function() {
-        var payType = '';
         $('#card').click(function() {
             $('#divCard').css("display", "block");
         });
@@ -103,6 +104,7 @@
         $('form').submit(function(event) {
             // stop the form from submitting the normal way and refreshing the page
             event.preventDefault();
+            
             // get the form data
             var formData = {
                               "payment": {
@@ -117,12 +119,17 @@
                               "clientId": $('input[id=clientID]').val()
                             };
             if (formData.payment.type === "card"){
+                 
                 formData.payment["card"] = {
                                   "holderName": $('input[id=holderName]').val(),
                                   "number": $('input[id=cardNumber]').val(),
                                   "expirationDate": $('input[id=expiration]').val(),
                                   "cvv": $('input[id=cardCvv]').val()
                                 };
+                if (!checkCreditCard(formData.payment.card.number, "")){
+                    alert("Please check your credit card number.");
+                    return;
+                }
             }
             // process the form
             $.ajax({
@@ -134,11 +141,11 @@
                 headers     : { "x-api-key": 1234 },
                 encode          : true
             })
-                // using the done promise callback
+
                 .done(function(data) {
     
-                    // log data to the console so we can see
-                    console.log(data); 
+
+                    //console.log(data); 
                     if (data.status === "error"){
                         $('#resultSpan').html("ERROR: " + data.errorMessage);
                     } else {
@@ -146,7 +153,7 @@
                     }
                     
     
-                    // here we will handle errors and validation messages
+
                 })
                 .fail(function(error){
                     console.log(error); 
@@ -158,6 +165,172 @@
     
     });
       
+</script>
+
+<script>
+    var ccErrorNo = 0;
+var ccErrors = new Array ()
+
+ccErrors [0] = "Unknown card type";
+ccErrors [1] = "No card number provided";
+ccErrors [2] = "Credit card number is in invalid format";
+ccErrors [3] = "Credit card number is invalid";
+ccErrors [4] = "Credit card number has an inappropriate number of digits";
+ccErrors [5] = "Warning! This credit card number is associated with a scam attempt";
+
+function checkCreditCard (cardnumber, cardname) {
+     
+  // Array to hold the permitted card characteristics
+  var cards = new Array();
+
+  // Define the cards we support. You may add addtional card types as follows.
+  
+  //  Name:         As in the selection box of the form - must be same as user's
+  //  Length:       List of possible valid lengths of the card number for the card
+  //  prefixes:     List of possible prefixes for the card
+  //  checkdigit:   Boolean to say whether there is a check digit
+  
+  cards [0] = {name: "Visa", 
+               length: "13,16", 
+               prefixes: "4",
+               checkdigit: true};
+  cards [1] = {name: "MasterCard", 
+               length: "16", 
+               prefixes: "51,52,53,54,55",
+               checkdigit: true};
+  cards [2] = {name: "DinersClub", 
+               length: "14,16", 
+               prefixes: "36,38,54,55",
+               checkdigit: true};
+  cards [3] = {name: "AmEx", 
+               length: "15", 
+               prefixes: "34,37",
+               checkdigit: true};
+  cards [4] = {name: "Maestro", 
+               length: "12,13,14,15,16,18,19", 
+               prefixes: "5018,5020,5038,6304,6759,6761,6762,6763",
+               checkdigit: true};
+  cards [5] = {name: "VisaElectron", 
+               length: "16", 
+               prefixes: "4026,417500,4508,4844,4913,4917",
+               checkdigit: true};
+               
+  // Establish card type
+  var cardType = -1;
+  for (var i=0; i<cards.length; i++) {
+
+    // See if it is this card (ignoring the case of the string)
+    if (cardname.toLowerCase () == cards[i].name.toLowerCase()) {
+      cardType = i;
+      break;
+    }
+  }
+  
+  // If card type not found, report an error
+  if (cardType == -1) {
+     ccErrorNo = 0;
+     return false; 
+  }
+   
+  // Ensure that the user has provided a credit card number
+  if (cardnumber.length == 0)  {
+     ccErrorNo = 1;
+     return false; 
+  }
+    
+  // Now remove any spaces from the credit card number
+  cardnumber = cardnumber.replace (/\s/g, "");
+  
+  // Check that the number is numeric
+  var cardNo = cardnumber
+  var cardexp = /^[0-9]{13,19}$/;
+  if (!cardexp.exec(cardNo))  {
+     ccErrorNo = 2;
+     return false; 
+  }
+       
+  // Now check the modulus 10 check digit - if required
+  if (cards[cardType].checkdigit) {
+    var checksum = 0;                                  // running checksum total
+    var mychar = "";                                   // next char to process
+    var j = 1;                                         // takes value of 1 or 2
+  
+    // Process each digit one by one starting at the right
+    var calc;
+    for (i = cardNo.length - 1; i >= 0; i--) {
+    
+      // Extract the next digit and multiply by 1 or 2 on alternative digits.
+      calc = Number(cardNo.charAt(i)) * j;
+    
+      // If the result is in two digits add 1 to the checksum total
+      if (calc > 9) {
+        checksum = checksum + 1;
+        calc = calc - 10;
+      }
+    
+      // Add the units element to the checksum total
+      checksum = checksum + calc;
+    
+      // Switch the value of j
+      if (j ==1) {j = 2} else {j = 1};
+    } 
+  
+    // All done - if checksum is divisible by 10, it is a valid modulus 10.
+    // If not, report an error.
+    if (checksum % 10 != 0)  {
+     ccErrorNo = 3;
+     return false; 
+    }
+  }  
+  
+  // Check it's not a spam number
+  if (cardNo == '5490997771092064') { 
+    ccErrorNo = 5;
+    return false; 
+  }
+
+  // The following are the card-specific checks we undertake.
+  var LengthValid = false;
+  var PrefixValid = false; 
+  var undefined; 
+
+  // We use these for holding the valid lengths and prefixes of a card type
+  var prefix = new Array ();
+  var lengths = new Array ();
+    
+  // Load an array with the valid prefixes for this card
+  prefix = cards[cardType].prefixes.split(",");
+      
+  // Now see if any of them match what we have in the card number
+  for (i=0; i<prefix.length; i++) {
+    var exp = new RegExp ("^" + prefix[i]);
+    if (exp.test (cardNo)) PrefixValid = true;
+  }
+      
+  // If it isn't a valid prefix there's no point at looking at the length
+  if (!PrefixValid) {
+     ccErrorNo = 3;
+     return false; 
+  }
+    
+  // See if the length is valid for this card
+  lengths = cards[cardType].length.split(",");
+  for (j=0; j<lengths.length; j++) {
+    if (cardNo.length == lengths[j]) LengthValid = true;
+  }
+  
+  // See if all is OK by seeing if the length was valid. We only check the length if all else was 
+  // hunky dory.
+  if (!LengthValid) {
+     ccErrorNo = 4;
+     return false; 
+  };   
+  
+  // The credit card is in the required format.
+  return true;
+}
+
+/*================================================================================================*/
 </script>
 
 
